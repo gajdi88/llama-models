@@ -14,8 +14,6 @@ setlocal enabledelayedexpansion
 REM Temporarily add wget to the PATH
 set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH%
 
-echo %PATH%
-
 set /p PRESIGNED_URL="Enter the URL from email: "
 set ALL_MODELS_LIST=meta-llama-3.1-405b,meta-llama-3.1-70b,meta-llama-3.1-8b,meta-llama-guard-3-8b,prompt-guard
 echo.
