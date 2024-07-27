@@ -10,18 +10,11 @@
 #   print(chunk['message']['content'], end='', flush=True)
 
 import asyncio
-import argparse
-
 import ollama
 
 
 
 async def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--speak', default=False, action='store_true')
-    args = parser.parse_args()
-
-    speaker = None
 
     client = ollama.AsyncClient()
 
@@ -46,6 +39,8 @@ async def main():
 
 
             print()
+        else:
+            break
 
 
 try:
