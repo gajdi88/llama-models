@@ -2,6 +2,13 @@
 
 import transformers
 import torch
+import asyncio
+
+import warnings
+
+# Suppress specific warnings
+warnings.filterwarnings("ignore", message="Setting `pad_token_id` to `eos_token_id`")
+warnings.filterwarnings("ignore", message="Torch was not compiled with flash attention")
 
 model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 # model_id = "./Meta-Llama-3.1-8B-Instruct"
@@ -20,13 +27,30 @@ pipeline = transformers.pipeline(
 
 pipeline.model.to(device)
 
-messages = [
-    {"role": "system", "content": "You are a pirate chatbot who always responds in pirate speak!"},
-    {"role": "user", "content": "Who are you?"},
-]
+async def chatbot():
+    messages = []
 
-outputs = pipeline(
-    messages,
-    max_new_tokens=256,
-)
-print(outputs[0]["generated_text"][-1])
+    while True:
+        try:
+            content_in = input('>>> ')
+            if content_in:
+                messages.append({"role": "user", "content": content_in})
+
+                # Combine messages into a single input string
+                input_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in messages])
+
+                # Generate response
+                outputs = pipeline(input_text, max_new_tokens=256)
+
+                content_out = outputs[0]["generated_text"]
+                print(content_out)
+
+                messages.append({"role": "assistant", "content": content_out})
+            else:
+                break
+        except (KeyboardInterrupt, EOFError):
+            print("Exiting chat...")
+            break
+
+# Run the chatbot
+asyncio.run(chatbot())
